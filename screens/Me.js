@@ -1,9 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Text, View } from "react-native";
 import AuthButton from "../components/auth/AuthButton";
 import { logUserOut } from "../apollo";
+import useMe from "../hooks/useMe";
 
-export default function Me() {
+export default function Me({ navigation }) {
+  const { data } = useMe();
+  //console.log(data?.me?.username);
+  useEffect(() => {
+    navigation.setOptions({
+      title: data?.me?.username,
+    });
+  }, [data]);
   return (
     <View
       style={{
@@ -13,7 +21,6 @@ export default function Me() {
         justifyContent: "center",
       }}
     >
-      <Text style={{ color: "white" }}>Me</Text>
       <AuthButton text="Logout" onPress={() => logUserOut()} />
     </View>
   );

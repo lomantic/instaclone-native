@@ -1,3 +1,4 @@
+import "react-native-gesture-handler";
 import AppLoading from "expo-app-loading";
 //import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
@@ -36,10 +37,11 @@ export default function App() {
       isLoggedInVar(true);
       tokenVar(token);
     }
-    // await persistCache({
-    //   cache,
-    //   storage: new AsyncStorageWrapper(AsyncStorage),
-    // });
+    await persistCache({
+      cache,
+      storage: new AsyncStorageWrapper(AsyncStorage),
+      serialize: false,
+    });
     return preloadAssets();
   };
 

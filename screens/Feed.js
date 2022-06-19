@@ -10,6 +10,7 @@ const FEED_QUERY = gql`
     seeFeed(offset: $offset) {
       ...PhotoFragment
       user {
+        id
         username
         avatar
       }
@@ -31,7 +32,7 @@ export default function Feed() {
       offset: 0,
     },
   });
-  console.log(data);
+  //console.log(data);
   const renderPhoto = ({ item: photo }) => {
     return <Photo {...photo} />;
   };

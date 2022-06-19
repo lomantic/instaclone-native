@@ -1,4 +1,5 @@
 import React from "react";
+import DismissKeyboard from "../DismissKeyboard";
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -28,11 +29,7 @@ export default function AuthLayout({ children }) {
     Keyboard.dismiss();
   };
   return (
-    <TouchableWithoutFeedback
-      style={{ flex: 1 }}
-      onPress={dismissKeyboard}
-      disabled={Platform.OS === "web"}
-    >
+    <DismissKeyboard>
       <Container>
         <KeyboardAvoidingView
           style={{
@@ -48,6 +45,6 @@ export default function AuthLayout({ children }) {
           {children}
         </KeyboardAvoidingView>
       </Container>
-    </TouchableWithoutFeedback>
+    </DismissKeyboard>
   );
 }

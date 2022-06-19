@@ -68,7 +68,7 @@ function Photo({ id, user, caption, file, isLiked, likes }) {
         setImageHeight(height * ratio);
       }
     });
-  }, [file]);
+  }, [file, isLiked, likes]);
 
   const updateToggleLike = (cache, result) => {
     const {
@@ -100,9 +100,15 @@ function Photo({ id, user, caption, file, isLiked, likes }) {
     },
     update: updateToggleLike,
   });
+  const goToProfile = () => {
+    navigation.navigate("Profile", {
+      username: user.username,
+      id: user.id,
+    });
+  };
   return (
     <Container>
-      <Header onPress={() => navigation.navigate("Profile")}>
+      <Header onPress={goToProfile}>
         <UserAvatar resizeMode="cover" source={{ uri: user.avatar }} />
         <Username>{user.username}</Username>
       </Header>
@@ -137,7 +143,7 @@ function Photo({ id, user, caption, file, isLiked, likes }) {
           <Likes>{likes === 1 ? "1 like" : `${likes} likes`}</Likes>
         </TouchableOpacity>
         <Caption>
-          <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+          <TouchableOpacity onPress={goToProfile}>
             <Username>{user.username}</Username>
           </TouchableOpacity>
           <CaptionText>{caption}</CaptionText>
