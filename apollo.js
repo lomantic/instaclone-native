@@ -1,14 +1,19 @@
 import {
   ApolloClient,
   createHttpLink,
+  split,
   InMemoryCache,
   makeVar,
 } from "@apollo/client";
+import {
+  getMainDefinition,
+  offsetLimitPagination,
+} from "@apollo/client/utilities";
 import { setContext } from "@apollo/client/link/context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { offsetLimitPagination } from "@apollo/client/utilities";
 import { onError } from "@apollo/client/link/error";
 import { createUploadLink } from "apollo-upload-client";
+import { WebSocketLink } from "@apollo/client/link/ws";
 
 export const isLoggedInVar = makeVar(false);
 export const tokenVar = makeVar("");
@@ -26,7 +31,17 @@ export const logUserOut = async () => {
 };
 
 const uploadHttpLink = createUploadLink({
-  uri: "https://d433-211-197-51-108.jp.ngrok.io/graphql",
+  uri: "https://fcd4-211-197-51-108.jp.ngrok.io/graphql",
+});
+
+const wsLink = new WebSocketLink({
+  uri: "ws://fcd4-211-197-51-108.jp.ngrok.io/graphql",
+  options: {
+    //reconnect: true,
+    connectionParams: () => ({
+      authorization: tokenVar(),
+    }),
+  },
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -56,8 +71,22 @@ export const cache = new InMemoryCache({
   },
 });
 
+const httpLinks = authLink.concat(onErrorLink).concat(uploadHttpLink);
+
+const splitLink = split(
+  ({ query }) => {
+    const definition = getMainDefinition(query);
+    return (
+      definition.kind === "OperationDefinition" &&
+      definition.operation === "subscription"
+    );
+  },
+  wsLink,
+  httpLinks
+);
+
 const client = new ApolloClient({
-  link: authLink.concat(onErrorLink).concat(uploadHttpLink),
+  link: splitLink,
   cache,
 });
 

@@ -25,9 +25,6 @@ const Logo = styled.Image`
 `;
 
 export default function AuthLayout({ children }) {
-  const dismissKeyboard = () => {
-    Keyboard.dismiss();
-  };
   return (
     <DismissKeyboard>
       <Container>
